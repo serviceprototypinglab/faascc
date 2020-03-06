@@ -1,0 +1,91 @@
+# FaaS Characteristics and Constraints Knowledge Base (FaaSCC)
+# Maintainer: Josef Spillner <josef.spillner@zhaw.ch>
+# Additional data collection: Daiana Boruta <boru@zhaw.ch>
+#
+# Implementations should read the values with the highest timestamp.
+# Units: duration=s, localdisk=MB, memory=[MB], contingentload=GBs, pricecall=USD, priceload=USD
+---
+- name: AWS Lambda
+  synonyms: Lambda, Amazon Lambda, λ
+  duration:
+  - 1524979005: 300 # https://aws.amazon.com/de/lambda/faqs/
+  blocked:
+  - 1524979005: ingress, egress:25, egress:udp, ptrace
+  localdisk:
+  - 1524979005: 500
+  memory:
+  - 1524979005: [128, 256, 512, 1024, 3008]
+  parameters:
+  - python:
+    - 1524979005: [event, context]
+  return:
+  - python:
+    - 1524979005: some_value
+  contingentcalls: # https://aws.amazon.com/de/lambda/pricing/
+  - 1524979005: 1000000
+  contingentload:
+  - 1524979005: 400000
+  pricecall:
+  - 1524979005: 0.0000002
+  priceload:
+  - 1524979005: 0.00001667
+- name: Google Cloud Functions
+  synonyms: GCF
+  duration:
+  - 1524979005: 540 # https://cloud.google.com/functions/quotas
+  contingentcalls: # https://cloud.google.com/functions/
+  - 1524979005: 2000000
+  contingentload:
+  - 1524979005: 400000 # + 200000 GHz/s
+  pricecall:
+  - 1524979005: 0.00000040
+  priceload:
+  - 1524979005: 0.0000025
+- name: IBM Cloud Functions
+  synonyms: IBM OpenWhisk
+  duration:
+  - 1523164605: 300
+  - 1524979005: 600 # https://www.ibm.com/blogs/bluemix/2018/04/ibm-cloud-functions-doubling-time-limit-executing-actions/
+  contingentcalls: # https://console.bluemix.net/openwhisk/learn/pricing
+  - 1524979005: 0
+  contingentload:
+  - 1524979005: 400000
+  pricecall:
+  - 1524979005: 0
+  priceload:
+  - 1524979005: 0.000017
+- name: Microsoft Azure Functions
+  synonyms: Azure Functions
+  duration: # https://docs.microsoft.com/en-us/azure/azure-functions/functions-scale
+  - 1502948087: 300
+  - 1524979005: 600 # https://buildazure.com/2017/08/17/azure-functions-extend-execution-timeout-past-5-minutes/
+  contingentcalls: # https://azure.microsoft.com/en-us/pricing/details/functions/
+  - 1524979005: 1000000
+  contingentload:
+  - 1524979005: 400000
+  pricecall:
+  - 1524979005: 0.00000020
+  priceload:
+  - 1524979005: 0.000016
+- name: Alibaba Cloud Function Compute
+  duration: # https://www.alibabacloud.com/help/doc-detail/51907.htm?spm=a2c63.p38356.b99.153.7ef82440cwElAo
+  - 1582721019: unlimited
+  contingentcalls:
+  - 1582721019: 1000000
+  contingentload:
+  - 1582721019: 400000
+  pricecall:
+  - 1582721019: 0.0000002
+  priceload:
+  - 1582721019: 0.00001668
+- name: Oracle Functions
+  duration: # ...
+  - 1582721019: unknown
+  contingentcalls:
+  - 1582721019: 2000000
+  contingentload:
+  - 1582721019: 400000
+  pricecall:
+  - 1582721019: 0.0000002
+  priceload:
+  - 1582721019: 0.00001417
