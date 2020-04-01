@@ -3,18 +3,34 @@
 # Additional data collection: Daiana Boruta <boru@zhaw.ch>
 #
 # Implementations should read the values with the highest timestamp.
-# Units: duration=s, localdisk=MB, memory=[MB], contingentload=GBs, pricecall=USD, priceload=USD
+# Units: duration=s, localdisk=MB, memory=[MB], contingentload=GB-s, pricecall=USD, priceload=USD/GB-s
+#
+# Dates reference
+# 10 oct 2018:  1539129600
+# 05 sep 2019:  1567641600
+# 
 ---
 - name: AWS Lambda
   synonyms: Lambda, Amazon Lambda, λ
   duration:
   - 1524979005: 300 # https://aws.amazon.com/de/lambda/faqs/
+  - 1539129600: 900 # https://aws.amazon.com/about-aws/whats-new/2018/10/aws-lambda-supports-functions-that-can-run-up-to-15-minutes/
+  timegranularity:
+  - 1567641600: 0.1
   blocked:
   - 1524979005: ingress, egress:25, egress:udp, ptrace
   localdisk:
   - 1524979005: 500
   memory:
-  - 1524979005: [128, 256, 512, 1024, 3008]
+  - 1524979005:
+    - min: 128
+    - max: 3008
+    - granularity: "2x"
+    - oldvalue: [128, 256, 512, 1024, 3008]
+  - 1567641600:
+    - min: 128
+    - max: 3008
+    - granularity: 64
   parameters:
   - python:
     - 1524979005: [event, context]
@@ -33,19 +49,40 @@
   synonyms: GCF
   duration:
   - 1524979005: 540 # https://cloud.google.com/functions/quotas
+  timegranularity:
+  - 1567641600: 0.1
+  memory:
+  - 1567641600:
+    - min: 128
+    - max: 2048
+    - granularity: "2x"
   contingentcalls: # https://cloud.google.com/functions/
   - 1524979005: 2000000
   contingentload:
   - 1524979005: 400000 # + 200000 GHz/s
   pricecall:
-  - 1524979005: 0.00000040
-  priceload:
-  - 1524979005: 0.0000025
+  - 1524979005: 0.0000004
+  priceload: # https://cloud.google.com/functions/docs/locations
+  - tier1:
+    - 1524979005: 0.0000025
+  - tier2: # https://cloud.google.com/functions/docs/release-notes
+    - 1580256000: 0.0000035
+  priceghzsec:
+  - tier1:
+    - 1567641600: 0.00001
+  - tier2: 
+    - 1580256000: 0.000014
 - name: IBM Cloud Functions
   synonyms: IBM OpenWhisk
   duration:
   - 1523164605: 300
   - 1524979005: 600 # https://www.ibm.com/blogs/bluemix/2018/04/ibm-cloud-functions-doubling-time-limit-executing-actions/
+  timegranularity:
+  - 1567641600: 0.1
+  memory:
+  - 1567641600:
+    - min: 1
+    - granularity: 1
   contingentcalls: # https://console.bluemix.net/openwhisk/learn/pricing
   - 1524979005: 0
   contingentload:
@@ -59,17 +96,31 @@
   duration: # https://docs.microsoft.com/en-us/azure/azure-functions/functions-scale
   - 1502948087: 300
   - 1524979005: 600 # https://buildazure.com/2017/08/17/azure-functions-extend-execution-timeout-past-5-minutes/
+  timegranularity:
+  - 1567641600: 0.001
+  memory:
+  - 1567641600:
+    - min: 128
+    - max: 1536
+    - granularity: 128
   contingentcalls: # https://azure.microsoft.com/en-us/pricing/details/functions/
   - 1524979005: 1000000
   contingentload:
   - 1524979005: 400000
   pricecall:
-  - 1524979005: 0.00000020
+  - 1524979005: 0.0000002
   priceload:
   - 1524979005: 0.000016
 - name: Alibaba Cloud Function Compute
   duration: # https://www.alibabacloud.com/help/doc-detail/51907.htm?spm=a2c63.p38356.b99.153.7ef82440cwElAo
   - 1582721019: unlimited
+  - 1559260800: 600# https://www.alibabacloud.com/help/doc-detail/51907.htm?spm=a2c63.p38356.b99.153.13d77bb15jvwQQ
+  timegranularity:
+  - 1567641600: 0.1
+  memory:
+  - 1567641600:
+    - min: 64 # http://g.alicdn.com/aliyun-next/fc/1.1.69/price.html?spm=a2c63.p38356.879954.8.6dfe7bb1yYwXtM
+    - granularity: 64
   contingentcalls:
   - 1582721019: 1000000
   contingentload:
@@ -79,6 +130,7 @@
   priceload:
   - 1582721019: 0.00001668
 - name: Oracle Functions
+  url: https://www.oracle.com/cloud/cloud-native/functions
   duration: # ...
   - 1582721019: unknown
   contingentcalls:
