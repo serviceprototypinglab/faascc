@@ -128,7 +128,7 @@
   pricecall:
   - 1582721019: 0.0000002
   priceload:
-  - 1582721019: 0.00001668
+  - 1582721019: 0.000016384
 - name: Oracle Functions
   url: https://www.oracle.com/cloud/cloud-native/functions
   duration: # ...
